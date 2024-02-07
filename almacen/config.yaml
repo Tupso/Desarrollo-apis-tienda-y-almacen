@@ -1,0 +1,7 @@
+base_datos:
+  path: almacen.db
+  consumidor_almacen: consumidor_almacen
+  consumidor_almacen: 12345
+
+servicios:
+  path: /almacen/
