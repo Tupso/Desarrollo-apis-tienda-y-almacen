@@ -1,7 +1,6 @@
 import argparse
 import yaml
 from flask import Flask, jsonify, request, send_from_directory
-from flasgger import Swagger, swag_from
 from flask_swagger_ui import get_swaggerui_blueprint
 from functools import wraps
 from bd import create_db
@@ -46,13 +45,18 @@ def validar_api_key(func):
 def obtener_articulos():
     articulos = get_articulos(config['basedatos']['path'])
     articulos_json = [{'id': articulo[0], 'nombre': articulo[1], 'descripcion': articulo[2],
-                       'cantidad': articulo[3], 'disponible': bool(articulo[4])} for articulo in articulos]
+                       'cantidad': articulo[3], 'disponible': bool(articulo[4])}for articulo in articulos]
     return jsonify({'articulos': articulos_json})
+
 
 @app.route('/articulos/<int:id>', methods=['GET'])
 @validar_api_key
 def obtener_articulo(id):
-    return jsonify(get_articulo(config['basedatos']['path'], id))
+    articulo = get_articulo(config['basedatos']['path'], id)
+    if articulo:
+        return jsonify(articulo)
+    else:
+        return jsonify({'message': 'Artículo no encontrado'}), 404
 
 
 @app.route('/articulos', methods=['POST'])
@@ -72,12 +76,8 @@ def crear_articulo():
 @validar_api_key
 def actualizar_articulo(id):
     data = request.json
-    nombre = data['nombre']
-    descripcion = data.get('descripcion', '')
-    cantidad = data.get('cantidad', 0)
-    disponible = data.get('disponible', 0)
 
-    update_articulo(config['basedatos']['path'], id, nombre, descripcion, cantidad, disponible)
+    update_articulo(config['basedatos']['path'], id, data)
     return jsonify({'message': 'Artículo actualizado correctamente'})
 
 

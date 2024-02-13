@@ -17,13 +17,23 @@ def get_articulos(db_path):
 def get_articulo(db_path, id):
     conn = get_db_connection(db_path)
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM articulos WHERE id = ?', (id,))
+    cursor.execute('SELECT * FROM articulos WHERE id=?', (id,))
     articulo = cursor.fetchone()
     conn.close()
-    return articulo
+
+    if articulo:
+        return {
+            'id': articulo[0],
+            'nombre': articulo[1],
+            'descripcion': articulo[2],
+            'cantidad': articulo[3],
+            'disponible': bool(articulo[4])
+        }
+    else:
+        return None
 
 
-def create_articulo(db_path, nombre, descripcion='', cantidad=0, disponible=0):
+def create_articulo(db_path, nombre, descripcion='', cantidad=0, disponible=True):
     conn = get_db_connection(db_path)
     cursor = conn.cursor()
     cursor.execute('INSERT INTO articulos (nombre, descripcion, cantidad, disponible) VALUES (?, ?, ?, ?)', (nombre, descripcion, cantidad, disponible))
@@ -31,10 +41,23 @@ def create_articulo(db_path, nombre, descripcion='', cantidad=0, disponible=0):
     conn.close()
 
 
-def update_articulo(db_path, id, nombre, descripcion='', cantidad=0, disponible=0):
+def update_articulo(db_path, id, data):
     conn = get_db_connection(db_path)
     cursor = conn.cursor()
-    cursor.execute('UPDATE articulos SET nombre=?, descripcion=?, cantidad=?, disponible=? WHERE id=?', (nombre, descripcion, cantidad, disponible, id))
+
+    # Construir la sentencia SQL de actualización
+    sql = 'UPDATE articulos SET '
+    params = []
+    for key, value in data.items():
+        if key != 'id':  # Evitar actualizar el ID
+            sql += f'{key}=?, '
+            params.append(value)
+    sql = sql.rstrip(', ')  # Eliminar la coma final
+    sql += ' WHERE id=?'
+    params.append(id)
+
+    # Ejecutar la sentencia SQL de actualización
+    cursor.execute(sql, params)
     conn.commit()
     conn.close()
 
