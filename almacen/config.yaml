@@ -1,5 +1,5 @@
 basedatos:
-  path: /almacen.db
+  path: db/almacen.db
   consumidor_almacen: consumidor_almacen
   consumidor_almacen_api: 5555
 

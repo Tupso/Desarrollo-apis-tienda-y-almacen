@@ -21,12 +21,13 @@ def create_db(db_path):
             )
         ''')
         conn.commit()
+        # conn.close()
     else:
         print(f"La base de datos ya existe en: {db_path}")
-        # conn.close()
-    # Obtener los resultados
-    # cursor.execute("SELECT * FROM articulos")
-    # results = cursor.fetchall()
-    #print(results)
+
+# Obtener los resultados
+# cursor.execute("SELECT * FROM articulos")
+# results = cursor.fetchall()
+# print(results)
 
 
