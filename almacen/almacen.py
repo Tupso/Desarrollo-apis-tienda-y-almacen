@@ -1,7 +1,5 @@
 import argparse
 import yaml
-import sqlite3
-import os
 from flask import Flask, jsonify, request, send_from_directory
 from flasgger import Swagger, swag_from
 from flask_swagger_ui import get_swaggerui_blueprint
@@ -35,7 +33,7 @@ def validar_api_key(func):
     def wrapper(*args, **kwargs):
         api_key = request.headers.get("API-Key")
 
-        if api_key != config['basedatos']['consumidor_almacen_api']:
+        if api_key != str(config['basedatos']['consumidor_almacen_api']):
             return jsonify({'message': 'API Key invalida'}), 401
 
         return func(*args, **kwargs)
@@ -46,8 +44,10 @@ def validar_api_key(func):
 @app.route('/articulos', methods=['GET'])
 @validar_api_key
 def obtener_articulos():
-    return jsonify(get_articulos(config['basedatos']['path']))
-
+    articulos = get_articulos(config['basedatos']['path'])
+    articulos_json = [{'id': articulo[0], 'nombre': articulo[1], 'descripcion': articulo[2],
+                       'cantidad': articulo[3], 'disponible': bool(articulo[4])} for articulo in articulos]
+    return jsonify({'articulos': articulos_json})
 
 @app.route('/articulos/<int:id>', methods=['GET'])
 @validar_api_key
