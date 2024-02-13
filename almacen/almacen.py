@@ -1,11 +1,14 @@
-import sqlite3
 import argparse
 import yaml
+import sqlite3
+import os
 from flask import Flask, jsonify, request, send_from_directory
 from flasgger import Swagger, swag_from
 from flask_swagger_ui import get_swaggerui_blueprint
 from functools import wraps
 from bd import create_db
+from crud_services import (get_articulos, get_articulo, create_articulo, update_articulo, delete_articulo,
+                           incrementar_articulo, disminuir_articulo)
 
 app = Flask(__name__)
 
@@ -16,17 +19,24 @@ def load_config(config_path):
     return config
 
 
-def get_db_connection(db_path):
-    return sqlite3.connect(db_path)
+# Parseamos los parámetros
+parser = argparse.ArgumentParser(description="Almacén App")
+parser.add_argument("--servidor", default="localhost", help="IP o nombre del servidor (por defecto: localhost)")
+parser.add_argument("--puerto", default=5000, type=int, help="Puerto donde se expondrá el API (por defecto: 5000)")
+parser.add_argument("--config", required=True, help="Ruta y nombre del fichero de configuración")
+args = parser.parse_args()
+
+config = load_config(args.config)
+create_db(config['basedatos']['path'])
 
 
 def validar_api_key(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        api_key = request.headers.get('API-Key')
+        api_key = request.headers.get("API-Key")
 
-        if api_key != config['basedatos']['consumidor_almacen_key']:
-            return jsonify({'message': 'API Key inválida'}), 401
+        if api_key != config['basedatos']['consumidor_almacen_api']:
+            return jsonify({'message': 'API Key invalida'}), 401
 
         return func(*args, **kwargs)
 
@@ -34,82 +44,57 @@ def validar_api_key(func):
 
 
 @app.route('/articulos', methods=['GET'])
-def get_articulos():
-    db_connection = get_db_connection(config['basedatos']['path'])
-    cursor = db_connection.cursor()
-    cursor.execute('SELECT * FROM articulos')
-    articulos = cursor.fetchall()
-    db_connection.close()
-    return jsonify(articulos)
+@validar_api_key
+def obtener_articulos():
+    return jsonify(get_articulos(config['basedatos']['path']))
 
 
 @app.route('/articulos/<int:id>', methods=['GET'])
-def get_articulo(id):
-    db_connection = get_db_connection(config['basedatos']['path'])
-    cursor = db_connection.cursor()
-    cursor.execute('SELECT * FROM articulos WHERE id = ?', (id,))
-    articulo = cursor.fetchone()
-    db_connection.close()
-    return jsonify(articulo)
+@validar_api_key
+def obtener_articulo(id):
+    return jsonify(get_articulo(config['basedatos']['path'], id))
 
 
 @app.route('/articulos', methods=['POST'])
-def create_articulo():
+@validar_api_key
+def crear_articulo():
     data = request.json
     nombre = data['nombre']
     descripcion = data.get('descripcion', '')
     cantidad = data.get('cantidad', 0)
     disponible = data.get('disponible', 0)
 
-    db_connection = get_db_connection(config['basedatos']['path'])
-    cursor = db_connection.cursor()
-    cursor.execute('INSERT INTO articulos (nombre, descripcion, cantidad, disponible) VALUES (?, ?, ?, ?)',
-                   (nombre, descripcion, cantidad, disponible))
-    db_connection.commit()
-    db_connection.close()
+    create_articulo(config['basedatos']['path'], nombre, descripcion, cantidad, disponible)
     return jsonify({'message': 'Artículo creado correctamente'}), 201
 
 
 @app.route('/articulos/<int:id>', methods=['PUT'])
-def update_articulo(id):
+@validar_api_key
+def actualizar_articulo(id):
     data = request.json
     nombre = data['nombre']
     descripcion = data.get('descripcion', '')
     cantidad = data.get('cantidad', 0)
     disponible = data.get('disponible', 0)
 
-    db_connection = get_db_connection(config['basedatos']['path'])
-    cursor = db_connection.cursor()
-    cursor.execute('UPDATE articulos SET nombre=?, descripcion=?, cantidad=?, disponible=? WHERE id=?',
-                   (nombre, descripcion, cantidad, disponible, id))
-    db_connection.commit()
-    db_connection.close()
+    update_articulo(config['basedatos']['path'], id, nombre, descripcion, cantidad, disponible)
     return jsonify({'message': 'Artículo actualizado correctamente'})
 
 
 @app.route('/articulos/<int:id>', methods=['DELETE'])
-def delete_articulo(id):
-    db_connection = get_db_connection(config['basedatos']['path'])
-    cursor = db_connection.cursor()
-    cursor.execute('DELETE FROM articulos WHERE id = ?', (id,))
-    db_connection.commit()
-    db_connection.close()
+@validar_api_key
+def eliminar_articulo(id):
+    delete_articulo(config['basedatos']['path'], id)
     return jsonify({'message': 'Artículo eliminado correctamente'})
 
 
 @app.route('/articulos/<int:id>/incrementar', methods=['PUT'])
 @validar_api_key
-def incrementar_articulo(id):
+def incrementar_cantidad_articulo(id):
     data = request.json
     cantidad = data.get('cantidad', 1)
 
-    db_connection = get_db_connection(config['basedatos']['path'])
-    cursor = db_connection.cursor()
-    cursor.execute('UPDATE articulos SET cantidad = cantidad + ? WHERE id = ?', (cantidad, id))
-    db_connection.commit()
-
-    updated_rows = cursor.rowcount
-    db_connection.close()
+    updated_rows = incrementar_articulo(config['basedatos']['path'], id, cantidad)
 
     if updated_rows == 0:
         return jsonify({'message': 'El artículo no existe'}), 404
@@ -119,26 +104,19 @@ def incrementar_articulo(id):
 
 @app.route('/articulos/<int:id>/disminuir', methods=['PUT'])
 @validar_api_key
-def disminuir_articulo(id):
+def disminuir_cantidad_articulo(id):
     data = request.json
     cantidad = data.get('cantidad', 1)
 
-    db_connection = get_db_connection(config['basedatos']['path'])
-    cursor = db_connection.cursor()
-    cursor.execute('UPDATE articulos SET cantidad = cantidad - ? WHERE id = ?', (cantidad, id))
-    db_connection.commit()
-
-    updated_rows = cursor.rowcount
-    db_connection.close()
+    updated_rows = disminuir_articulo(config['basedatos']['path'], id, cantidad)
 
     if updated_rows == 0:
         return jsonify({'message': 'El artículo no existe'}), 404
     else:
         return jsonify({'message': 'Cantidad del artículo disminuida correctamente'})
 
-    # Se crea la ruta y la funcion para acceder a la documentacion de la API
 
-
+# Se crea la ruta y la funcion para acceder a la documentacion de la API
 # Ruta para mostrar el archivo api_doc.yaml
 SWAGGER_URL = '/api/docs'
 API_URL = '/services/spec'
@@ -161,13 +139,4 @@ def get_spec():
 
 
 if __name__ == '__main__':
-    # Parseamos los parámetros
-    parser = argparse.ArgumentParser(description="Almacén App")
-    parser.add_argument("--servidor", default="localhost", help="IP o nombre del servidor (por defecto: localhost)")
-    parser.add_argument("--puerto", default=5000, type=int, help="Puerto donde se expondrá el API (por defecto: 5000)")
-    parser.add_argument("--config", required=True, help="Ruta y nombre del fichero de configuración")
-    args = parser.parse_args()
-
-    config = load_config(args.config)
-    create_db(config['basedatos']['path'])
-
+    app.run(host=args.servidor,port=args.puerto)
