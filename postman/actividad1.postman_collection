@@ -581,6 +581,46 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Eliminar un producto",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{servidor_tienda}}/productos/5",
+							"host": [
+								"{{servidor_tienda}}"
+							],
+							"path": [
+								"productos",
+								"5"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
@@ -603,23 +643,6 @@
 					""
 				]
 			}
-		}
-	],
-	"variable": [
-		{
-			"key": "servidor_almacen",
-			"value": "http://localhost:5000",
-			"type": "string"
-		},
-		{
-			"key": "servidor_tienda",
-			"value": "http://localhost:5001",
-			"type": "string"
-		},
-		{
-			"key": "api_key",
-			"value": "12345",
-			"type": "string"
 		}
 	]
 }

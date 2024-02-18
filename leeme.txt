@@ -1,0 +1,3 @@
+en las peticiones de request de delete en la colección de postman, puse para pasar los tests el id 5, el cual
+ha borrado correctamente porque ha pasado los tests, o sea que no hay articulo/producto 5, pero creo que
+sigue tirando código 200 aun así, si no lo tirase pues pon otro id a eliminar y au.
