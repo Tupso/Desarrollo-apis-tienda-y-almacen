@@ -1,0 +1,8 @@
+basedatos:
+  path: db/tienda.db
+almacen:
+  servidor: "localhost"
+  path: ../almacen/db/almacen.db
+  puerto: 5000
+  ruta_articulos: "/articulos"
+  key: jhdshf7y3487hf7834hfjnrs76fjshdf

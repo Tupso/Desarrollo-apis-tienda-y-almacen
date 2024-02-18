@@ -1,0 +1,141 @@
+openapi: 3.0.0
+info:
+  title: API de Tienda
+  description: Documentación de la API de la tienda
+  version: 1.0.0
+servers:
+  - url: http://localhost:5001
+paths:
+  /productos:
+    get:
+      summary: Obtener todos los productos
+      responses:
+        '200':
+          description: Lista de productos
+    post:
+      summary: Crear un nuevo producto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Producto'
+      responses:
+        '201':
+          description: Producto creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+  /productos/{id}:
+    get:
+      summary: Obtener un producto por su ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del producto
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalles del producto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+        '404':
+          description: Producto no encontrado
+    put:
+      summary: Actualizar un producto por su ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del producto
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Producto'
+      responses:
+        '200':
+          description: Producto actualizado correctamente
+  /productos/{id}/precio:
+    put:
+      summary: Modificar el precio de un producto por su ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del producto
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                precio:
+                  type: number
+      responses:
+        '200':
+          description: Precio del producto actualizado correctamente
+  /productos/{id}/venta:
+    post:
+      summary: Vender una unidad de un producto por su ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del producto
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Se ha vendido una unidad del producto correctamente
+        '400':
+          description: Error al vender el producto
+        '404':
+          description: Producto no encontrado
+  /traspaso:
+    post:
+      summary: Solicitar traspaso de producto del almacén a la tienda
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                cantidad:
+                  type: integer
+      responses:
+        '200':
+          description: Traspaso realizado con éxito
+        '400':
+          description: Error en la solicitud de traspaso
+        '404':
+          description: Producto no encontrado
+components:
+  schemas:
+    Producto:
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        precio:
+          type: number
+        cantidad:
+          type: integer
+        vendidas:
+          type: integer

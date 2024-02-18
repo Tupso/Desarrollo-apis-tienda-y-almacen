@@ -1,0 +1,625 @@
+{
+	"info": {
+		"_postman_id": "aa10ed3c-88a1-414a-9af3-74beaf013a06",
+		"name": "Actividad1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31760559"
+	},
+	"item": [
+		{
+			"name": "almacén",
+			"item": [
+				{
+					"name": "Obtener todos los artículos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response should be an array\", function () {",
+									"    pm.response.to.be.json; ",
+									"    pm.response.to.have.jsonBody('articulos');",
+									"    pm.expect(pm.response.json().articulos).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "API-Key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{servidor_almacen}}/articulos",
+							"host": [
+								"{{servidor_almacen}}"
+							],
+							"path": [
+								"articulos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear un nuevo artículo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "API-Key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"nombre\": \"Articulo de prueba\", \"descripcion\": \"Descripción de prueba\", \"cantidad\": 15, \"disponible\": true}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{servidor_almacen}}/articulos",
+							"host": [
+								"{{servidor_almacen}}"
+							],
+							"path": [
+								"articulos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener un artículo por su ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "API-Key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{servidor_almacen}}/articulos/1",
+							"host": [
+								"{{servidor_almacen}}"
+							],
+							"path": [
+								"articulos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar un artículo existente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "API-Key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"descripcion\": \"sabor lotus\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{servidor_almacen}}/articulos/1",
+							"host": [
+								"{{servidor_almacen}}"
+							],
+							"path": [
+								"articulos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar un artículo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "API-Key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{servidor_almacen}}/articulos/5",
+							"host": [
+								"{{servidor_almacen}}"
+							],
+							"path": [
+								"articulos",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Incrementar la cantidad de un artículo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "API-Key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"cantidad\": 5}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{servidor_almacen}}/articulos/1/incrementar",
+							"host": [
+								"{{servidor_almacen}}"
+							],
+							"path": [
+								"articulos",
+								"1",
+								"incrementar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Disminuir la cantidad de un artículo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "API-Key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"cantidad\": 5}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{servidor_almacen}}/articulos/1/disminuir",
+							"host": [
+								"{{servidor_almacen}}"
+							],
+							"path": [
+								"articulos",
+								"1",
+								"disminuir"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "tienda",
+			"item": [
+				{
+					"name": "Obtener todos los productos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response should be an array\", function () {",
+									"    pm.response.to.be.json; ",
+									"    pm.response.to.have.jsonBody('productos');",
+									"    pm.expect(pm.response.json().productos).to.be.an('array');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{servidor_tienda}}/productos",
+							"host": [
+								"{{servidor_tienda}}"
+							],
+							"path": [
+								"productos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear un nuevo producto",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"nombre\": \"Producto de prueba\", \"descripcion\": \"prueba descripcion\", \"cantidad\": 20, \"precio\": 10}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{servidor_tienda}}/productos",
+							"host": [
+								"{{servidor_tienda}}"
+							],
+							"path": [
+								"productos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener un producto por su ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{servidor_tienda}}/productos/1",
+							"host": [
+								"{{servidor_tienda}}"
+							],
+							"path": [
+								"productos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar un producto por su ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"nombre\": \"natillas\", \"precio\": 2}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{servidor_tienda}}/productos/1",
+							"host": [
+								"{{servidor_tienda}}"
+							],
+							"path": [
+								"productos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modificar el precio de un producto por su ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"precio\": 20.5}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{servidor_tienda}}/productos/2/precio",
+							"host": [
+								"{{servidor_tienda}}"
+							],
+							"path": [
+								"productos",
+								"2",
+								"precio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Vender una unidad de un producto por su ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{servidor_tienda}}/productos/1/venta",
+							"host": [
+								"{{servidor_tienda}}"
+							],
+							"path": [
+								"productos",
+								"1",
+								"venta"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Solicitar traspaso de producto del almacén a la tienda",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"id\": 1, \"cantidad\": 2}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{servidor_tienda}}/traspaso",
+							"host": [
+								"{{servidor_tienda}}"
+							],
+							"path": [
+								"traspaso"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "servidor_almacen",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "servidor_tienda",
+			"value": "http://localhost:5001",
+			"type": "string"
+		},
+		{
+			"key": "api_key",
+			"value": "12345",
+			"type": "string"
+		}
+	]
+}

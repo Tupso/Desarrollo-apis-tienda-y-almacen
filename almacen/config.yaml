@@ -1,7 +1,7 @@
 basedatos:
   path: db/almacen.db
   consumidor_almacen: consumidor_almacen
-  consumidor_almacen_api: 5555
+  consumidor_almacen_api: jhdshf7y3487hf7834hfjnrs76fjshdf
 
 servicios:
   path: /almacen/

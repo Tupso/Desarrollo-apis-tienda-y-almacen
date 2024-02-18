@@ -1,0 +1,2 @@
+python almacen.py --servidor "localhost" --puerto 5000 --config config.yaml
+python tienda.py --servidor "localhost" --puerto 5001 --config config.yaml --key jhdshf7y3487hf7834hfjnrs76fjshdf

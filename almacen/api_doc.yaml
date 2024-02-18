@@ -1,120 +1,159 @@
-openapi: 3.0.0
+openapi: "3.0.0"
 info:
-  title: Almacén API
-  description: API para administrar un almacén de productos
-  version: 1.0.0
+  title: "Documentación de la API del Almacén"
+  version: "1.0.0"
+  description: "API para gestionar un almacén de productos"
+
 servers:
-  - url: http://localhost:5000
+  - url: "http://localhost:5000"
+
+security:
+  - apiKey: []
+
 paths:
   /articulos:
     get:
-      summary: Obtener todos los artículos
+      summary: "Obtener todos los artículos"
       responses:
-        '200':
-          description: OK
+        200:
+          description: "Operación exitosa"
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Articulo'
+                type: "object"
+                properties:
+                  articulos:
+                    type: "array"
+                    items:
+                      $ref: "#/components/schemas/Articulo"
     post:
-      summary: Crear un nuevo artículo
+      summary: "Crear un nuevo artículo"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ArticuloInput'
+              $ref: "#/components/schemas/CrearArticuloRequest"
       responses:
-        '201':
-          description: Creado
-        '400':
-          description: Petición incorrecta
+        201:
+          description: "Artículo creado correctamente"
+
   /articulos/{id}:
     get:
-      summary: Obtener un artículo por ID
+      summary: "Obtener un artículo por su ID"
       parameters:
-        - name: id
-          in: path
+        - name: "id"
+          in: "path"
           required: true
-          description: ID del artículo
+          description: "ID del artículo a obtener"
           schema:
-            type: integer
-            format: int64
+            type: "integer"
+            format: "int64"
       responses:
-        '200':
-          description: OK
+        200:
+          description: "Operación exitosa"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Articulo'
-        '404':
-          description: No encontrado
+                $ref: "#/components/schemas/Articulo"
+        404:
+          description: "Artículo no encontrado"
+
     put:
-      summary: Actualizar un artículo por ID
+      summary: "Actualizar un artículo existente"
       parameters:
-        - name: id
-          in: path
+        - name: "id"
+          in: "path"
           required: true
-          description: ID del artículo
+          description: "ID del artículo a actualizar"
           schema:
-            type: integer
-            format: int64
+            type: "integer"
+            format: "int64"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ArticuloInput'
+              $ref: "#/components/schemas/ActualizarArticuloRequest"
       responses:
-        '200':
-          description: OK
-        '404':
-          description: No encontrado
+        200:
+          description: "Artículo actualizado correctamente"
+
     delete:
-      summary: Eliminar un artículo por ID
+      summary: "Eliminar un artículo"
       parameters:
-        - name: id
-          in: path
+        - name: "id"
+          in: "path"
           required: true
-          description: ID del artículo
+          description: "ID del artículo a eliminar"
           schema:
-            type: integer
-            format: int64
+            type: "integer"
+            format: "int64"
       responses:
-        '200':
-          description: OK
-        '404':
-          description: No encontrado
+        200:
+          description: "Artículo eliminado correctamente"
+
+  /articulos/{id}/incrementar:
+    put:
+      summary: "Incrementar la cantidad de un artículo"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          description: "ID del artículo a incrementar"
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IncrementarArticuloRequest"
+      responses:
+        200:
+          description: "Cantidad del artículo incrementada correctamente"
+
+  /articulos/{id}/disminuir:
+    put:
+      summary: "Disminuir la cantidad de un artículo"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          description: "ID del artículo a disminuir"
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DisminuirArticuloRequest"
+      responses:
+        200:
+          description: "Cantidad del artículo disminuida correctamente"
+
 components:
   schemas:
     Articulo:
-      type: object
+      type: "object"
       properties:
         id:
-          type: integer
-          format: int64
+          type: "integer"
+          format: "int64"
         nombre:
-          type: string
+          type: "string"
         descripcion:
-          type: string
+          type: "string"
         cantidad:
-          type: integer
-          format: int32
+          type: "integer"
+          format: "int32"
         disponible:
-          type: integer
-          format: int32
-    ArticuloInput:
-      type: object
-      properties:
-        nombre:
-          type: string
-        descripcion:
-          type: string
-        cantidad:
-          type: integer
-          format: int32
-        disponible:
-          type: integer
-          format: int32
+          type: "boolean"
+  securitySchemes:
+      apiKey:
+        type: apiKey
+        in: header
+        name: API-Key

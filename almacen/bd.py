@@ -16,12 +16,12 @@ def create_db(db_path):
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nombre TEXT NOT NULL,
                 descripcion TEXT,
-                cantidad INTEGER NOT NULL DEFAULT 0,
+                cantidad INTEGER NOT NULL DEFAULT 15,
                 disponible BOOLEAN NOT NULL DEFAULT TRUE
             )
         ''')
         conn.commit()
-        # conn.close()
+        conn.close()
     else:
         print(f"La base de datos ya existe en: {db_path}")
 
